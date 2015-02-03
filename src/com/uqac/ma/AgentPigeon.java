@@ -2,9 +2,9 @@ package com.uqac.ma;
 
 import java.util.Map;
 
-public class AgentSpeculateur extends Agent {
-    public AgentSpeculateur() {
-        name = "Speculateur";
+public class AgentPigeon extends Agent {
+    public AgentPigeon() {
+        name = "Pigeon";
     }
 
     @Override
@@ -39,22 +39,22 @@ public class AgentSpeculateur extends Agent {
 
     @Override
     protected void VendreTitre() {
-        // Le spéculateur revend son titre plus cher (+10)
+        // Le pigeon revend son titre moins cher (-5)
         Bourse bourse = Bourse.getInstance();
-        bourse.vendreTitre(this, titrePossede, 10);
+        bourse.vendreTitre(this, titrePossede, -5);
         possedeTitre = false;
     }
 
     @Override
     protected void AcheterTitre() {
-        // Le spéculateur choisit le titre ayant la valeur minimum
+        // Le pigeon choisit le titre ayant la valeur maximum
         Map<String, Integer> titres = Bourse.getInstance().getTitres();
-        Map.Entry<String, Integer> min = null;
+        Map.Entry<String, Integer> max = null;
         for (Map.Entry<String, Integer> entry : titres.entrySet()) {
-            if (min == null || min.getValue() > entry.getValue()) min = entry;
+            if (max == null || max.getValue() < entry.getValue()) max = entry;
         }
-        assert min != null;
-        String titreAAcheter = min.getKey();
+        assert max != null;
+        String titreAAcheter = max.getKey();
 
         Bourse bourse = Bourse.getInstance();
         if (bourse.acheterTitre(this, titreAAcheter)) {

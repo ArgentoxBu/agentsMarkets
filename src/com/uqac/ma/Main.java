@@ -3,12 +3,12 @@ package com.uqac.ma;
 public class Main {
     public static void main(String[] args) {
         // Initialisation
-        Agent[] agents = new Agents[3];
+        Agent[] agents = new Agent[3];
         AgentSpeculateur speculateur = new AgentSpeculateur();
-        AgentSentimental sentimental = new AgentSentimental();
+        AgentPigeon pigeon = new AgentPigeon();
         AgentArbitre arbitre = new AgentArbitre();
         agents[0] = speculateur;
-        agents[1] = sentimental;
+        agents[1] = pigeon;
         agents[2] = arbitre;
 
         // On lance les agents
@@ -16,7 +16,12 @@ public class Main {
             agent.start();
 
         // On attends que les agents aient fini
-        for(Agent agent : agents)
-            agent.join();
+        for(Agent agent : agents) {
+            try {
+                agent.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
