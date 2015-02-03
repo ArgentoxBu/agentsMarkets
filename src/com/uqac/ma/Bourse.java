@@ -5,12 +5,14 @@ import java.util.Map;
 
 public class Bourse {
     private static Bourse instance = null;
-    //private Panneau panneau = Panneau.getInstance();
+    private Panneau panneau;
     private Map<String, Integer> titres;
     private Map<String, Boolean> titresPossedes;
     private Map<String, Integer> titresAvant;
 
     private Bourse() {
+        panneau = new Panneau();
+
         titres = new HashMap<String, Integer>();
         titres.put("Apple", 25);
         titres.put("Google", 20);
@@ -41,11 +43,11 @@ public class Bourse {
     }
 
     public void entrer(Agent agent) {
-        System.out.print(agent.getAgentName() + " entre sur le marché.\n");
+        panneau.print(agent.getAgentName() + " entre sur le marché.\n");
     }
 
     public void sortir(Agent agent) {
-        System.out.print(agent.getAgentName()+" sort du marché.\n");
+        panneau.print(agent.getAgentName() + " sort du marché.\n");
     }
 
     public Map<String, Integer> getTitres() {
@@ -54,8 +56,10 @@ public class Bourse {
 
     public Map<String, Integer> getFluctuations() {
         Map<String, Integer> fluctuations = new HashMap<String, Integer>();
-        for (Map.Entry<String, Integer> entry : titres.entrySet())
+        for (Map.Entry<String, Integer> entry : titres.entrySet()) {
             fluctuations.put(entry.getKey(), titres.get(entry.getKey()) - titresAvant.get(entry.getKey()));
+            panneau.setAnnonce(entry.getKey(), fluctuations.get(entry.getKey()) <= 0 ? "Diminue" : "Augmente");
+        }
 
         return fluctuations;
     }
@@ -63,7 +67,7 @@ public class Bourse {
     public boolean acheterTitre(Agent agent, String titreAAcheter) {
         if(!titresPossedes.get(titreAAcheter)) {
             titresPossedes.put(titreAAcheter, true);
-            System.out.print(agent.getAgentName()+" achète "+titreAAcheter+" pour "+titres.get(titreAAcheter)+"$.\n");
+            panneau.print(agent.getAgentName()+" achète "+titreAAcheter+" pour "+titres.get(titreAAcheter)+"$.\n");
             return true;
         } else
             return false;
@@ -75,6 +79,11 @@ public class Bourse {
         titresPossedes.put(titreAVendre, false);
         titresAvant.put(titreAVendre, prixActuel);
         titres.put(titreAVendre, prixNouveau);
-        System.out.print(agent.getAgentName()+" vends "+titreAVendre+" pour "+prixNouveau+"$.\n");
+        panneau.print(agent.getAgentName()+" vends "+titreAVendre+" pour "+prixNouveau+"$.\n");
+        if(prixNouveau > 1000) {
+            panneau.print("Crack boursier !! On recommence du début .\n");
+            titres.put(titreAVendre, 10);
+            titresAvant.put(titreAVendre, 10);
+        }
     }
 }
